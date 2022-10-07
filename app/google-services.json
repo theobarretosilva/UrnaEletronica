@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1075023146319",
+    "project_id": "urnaeletronica-3d2c7",
+    "storage_bucket": "urnaeletronica-3d2c7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1075023146319:android:32d4eaaa43576c2b66693a",
+        "android_client_info": {
+          "package_name": "com.example.urna"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1075023146319-pk7gj5m7t21qkrkke8p4aq2gn4ikt5vk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbxO5MPiWccBhiubcgowofdFewdZEN_qs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1075023146319-pk7gj5m7t21qkrkke8p4aq2gn4ikt5vk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
