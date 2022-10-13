@@ -1,6 +1,7 @@
 package com.example.urna;
 
 public class Candidato {
+
     String nome, cargo, numero, caminhoFoto;
     int quantidadeVotos;
 

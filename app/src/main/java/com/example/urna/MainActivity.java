@@ -1,5 +1,6 @@
 package com.example.urna;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -9,13 +10,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     EditText cpf, nCandidato;
     ArrayList<Candidato> lCandidatos = new ArrayList<>();
-    ArrayList<String> lCpfs = new ArrayList<>();
+    ArrayList<String> eleitores = new ArrayList<>();
     ImageView imgCandidato;
     TextView nomeCandidato, numeroCandidato, cargoCandidato;
 
@@ -84,14 +94,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void recuperaEleitores(){
+        String usuarioID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference documentReference = db.collection("Eleitores").document("9pTIt1GXy1nSghBKJn27");
+        documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {
+                if (documentSnapshot != null){
+//                    eleitores = documentSnapshot.get("Eleitores que já votaram");
+                }
+            }
+        });
+    }
+
     public void confirma(View j){
         String eleitor = cpf.getText().toString();
-        for (String cpf : lCpfs){
+        for (String cpf : eleitores){
             if (eleitor.equals(cpf)){
                 Toast.makeText(this, "Esse eleitor já votou!", Toast.LENGTH_SHORT).show();
                 return;
             }else{
-                lCpfs.add(eleitor);
+                eleitores.add(eleitor);
                 System.out.println(eleitor);
             }
         }
