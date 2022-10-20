@@ -46,13 +46,13 @@ public class MainActivity extends AppCompatActivity {
     Button verificarCandidato, votar;
     MediaPlayer mp;
 
-    ArrayList<String> nGretchen = new ArrayList<>();
-    ArrayList<String> nAnitta = new ArrayList<>();
-    ArrayList<String> nCachorro = new ArrayList<>();
-    ArrayList<String> nInes = new ArrayList<>();
-    ArrayList<String> nAnaMaria = new ArrayList<>();
-    ArrayList<String> nClaudia = new ArrayList<>();
-    ArrayList<String> nThalita = new ArrayList<>();
+    ArrayList<Integer> nGretchen = new ArrayList<>();
+    ArrayList<Integer> nAnitta = new ArrayList<>();
+    ArrayList<Integer> nCachorro = new ArrayList<>();
+    ArrayList<Integer> nInes = new ArrayList<>();
+    ArrayList<Integer> nAnaMaria = new ArrayList<>();
+    ArrayList<Integer> nClaudia = new ArrayList<>();
+    ArrayList<Integer> nThalita = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,6 +186,21 @@ public class MainActivity extends AppCompatActivity {
 
         String numero = nCandidato.getText().toString();
 
+        if (numero == "35"){
+
+        } else if(numero == "13") {
+
+        } else if(numero == "45") {
+
+        } else if(numero == "20") {
+
+        } else if(numero == "16") {
+
+        } else if(numero == "11") {
+
+        } else if(numero == "80") {
+
+        }
 
         mp = MediaPlayer.create(MainActivity.this, R.raw.urna_pronta);
         mp.start();
