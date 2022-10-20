@@ -46,13 +46,13 @@ public class MainActivity extends AppCompatActivity {
     Button verificarCandidato, votar;
     MediaPlayer mp;
 
-    ArrayList<Integer> nGretchen = new ArrayList<>();
-    ArrayList<Integer> nAnitta = new ArrayList<>();
-    ArrayList<Integer> nCachorro = new ArrayList<>();
-    ArrayList<Integer> nInes = new ArrayList<>();
-    ArrayList<Integer> nAnaMaria = new ArrayList<>();
-    ArrayList<Integer> nClaudia = new ArrayList<>();
-    ArrayList<Integer> nThalita = new ArrayList<>();
+    int nGretchen = 0;
+    int nAnitta = 0;
+    int nCachorro = 0;
+    int nInes = 0;
+    int nAnaMaria = 0;
+    int nClaudia = 0;
+    int nThalita = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,19 +187,21 @@ public class MainActivity extends AppCompatActivity {
         String numero = nCandidato.getText().toString();
 
         if (numero == "35"){
-
+            nGretchen++;
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
+                .child("Número de votos");
         } else if(numero == "13") {
-
+            nAnitta++;
         } else if(numero == "45") {
-
+            nCachorro++;
         } else if(numero == "20") {
-
+            nInes++;
         } else if(numero == "16") {
-
+            nAnaMaria++;
         } else if(numero == "11") {
-
+            nClaudia++;
         } else if(numero == "80") {
-
+            nThalita++;
         }
 
         mp = MediaPlayer.create(MainActivity.this, R.raw.urna_pronta);
