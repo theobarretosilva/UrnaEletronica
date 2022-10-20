@@ -1,25 +1,40 @@
 package com.example.urna;
 
+import static com.google.firebase.firestore.DocumentSnapshot.ServerTimestampBehavior.ESTIMATE;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,12 +42,23 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Candidato> lCandidatos = new ArrayList<>();
     ArrayList<String> eleitores = new ArrayList<>();
     ImageView imgCandidato;
-    TextView nomeCandidato, numeroCandidato, cargoCandidato;
+    TextView nomeCandidato, numeroCandidato, cargoCandidato, passo2;
+    Button verificarCandidato, votar;
+    MediaPlayer mp;
+
+    ArrayList<String> nGretchen = new ArrayList<>();
+    ArrayList<String> nAnitta = new ArrayList<>();
+    ArrayList<String> nCachorro = new ArrayList<>();
+    ArrayList<String> nInes = new ArrayList<>();
+    ArrayList<String> nAnaMaria = new ArrayList<>();
+    ArrayList<String> nClaudia = new ArrayList<>();
+    ArrayList<String> nThalita = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getWindow().setStatusBarColor(Color.rgb(34,87,122));
         getSupportActionBar().hide();
 
         iniciarComponentes();
@@ -46,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
         nomeCandidato = findViewById(R.id.nomeCandidato);
         numeroCandidato = findViewById(R.id.nCandidato);
         cargoCandidato = findViewById(R.id.cargoCandidato);
+        passo2 = findViewById(R.id.passo2);
+        verificarCandidato = findViewById(R.id.verificarCnadidato);
+        votar = findViewById(R.id.votar);
     }
 
     public void criarCandidatos(){
@@ -67,8 +96,58 @@ public class MainActivity extends AppCompatActivity {
         lCandidatos.add(nulo);
     }
 
-    public void verifica(View k){
+    public void verificaCPF(View g){
+        String cpfEleitor = cpf.getText().toString();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
+                .child("Eleitores que já votaram");
+
+        if (eleitores.isEmpty()){
+            mandaCPF();
+        } else {
+            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    String eleitoresBD = snapshot.getValue().toString();
+                    if (eleitoresBD.contains(cpfEleitor)){
+                        Toast.makeText(MainActivity.this, "Este eleitor já votou!", Toast.LENGTH_LONG).show();
+                    }else {
+                        mandaCPF();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+    }
+
+    public void mandaCPF(){
+        String cpfEleitor = cpf.getText().toString();
+        eleitores.add(cpfEleitor);
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
+                .child("Eleitores que já votaram");
+        reference.setValue(eleitores).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Toast.makeText(MainActivity.this, "CPF não cadastrado, pode votar!", Toast.LENGTH_LONG).show();
+                passo2.setVisibility(View.VISIBLE);
+                nCandidato.setVisibility(View.VISIBLE);
+                verificarCandidato.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    public void verificaCandidato(View k){
         String numero = nCandidato.getText().toString();
+        imgCandidato.setVisibility(View.VISIBLE);
+        nomeCandidato.setVisibility(View.VISIBLE);
+        numeroCandidato.setVisibility(View.VISIBLE);
+        cargoCandidato.setVisibility(View.VISIBLE);
+        votar.setVisibility(View.VISIBLE);
+
         for (Candidato c : lCandidatos){
             if (numero.equals(c.numero)){
                 String nomeDoCandidato = c.getNome();
@@ -94,30 +173,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void recuperaEleitores(){
-        String usuarioID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference documentReference = db.collection("Eleitores").document("9pTIt1GXy1nSghBKJn27");
-        documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {
-                if (documentSnapshot != null){
-//                    eleitores = documentSnapshot.get("Eleitores que já votaram");
-                }
-            }
-        });
-    }
+    public void votar(View t){
+        passo2.setVisibility(View.INVISIBLE);
+        nCandidato.setVisibility(View.INVISIBLE);
+        verificarCandidato.setVisibility(View.INVISIBLE);
+        imgCandidato.setVisibility(View.INVISIBLE);
+        nomeCandidato.setVisibility(View.INVISIBLE);
+        numeroCandidato.setVisibility(View.INVISIBLE);
+        cargoCandidato.setVisibility(View.INVISIBLE);
+        cpf.setText("");
+        votar.setVisibility(View.INVISIBLE);
 
-    public void confirma(View j){
-        String eleitor = cpf.getText().toString();
-        for (String cpf : eleitores){
-            if (eleitor.equals(cpf)){
-                Toast.makeText(this, "Esse eleitor já votou!", Toast.LENGTH_SHORT).show();
-                return;
-            }else{
-                eleitores.add(eleitor);
-                System.out.println(eleitor);
-            }
-        }
+        String numero = nCandidato.getText().toString();
+
+
+        mp = MediaPlayer.create(MainActivity.this, R.raw.urna_pronta);
+        mp.start();
+
+        Toast.makeText(MainActivity.this, "Você votou com sucesso!", Toast.LENGTH_LONG).show();
     }
 }
