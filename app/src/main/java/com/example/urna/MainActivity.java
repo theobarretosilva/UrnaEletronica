@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                    Toast.makeText(MainActivity.this, "Não foi possível conectar com o banco de dados", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -182,31 +182,80 @@ public class MainActivity extends AppCompatActivity {
         numeroCandidato.setVisibility(View.INVISIBLE);
         cargoCandidato.setVisibility(View.INVISIBLE);
         cpf.setText("");
+        nCandidato.setText("");
         votar.setVisibility(View.INVISIBLE);
 
         String numero = nCandidato.getText().toString();
 
-        if (numero == "35"){
-            nGretchen++;
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
-                .child("Número de votos");
-        } else if(numero == "13") {
-            nAnitta++;
-        } else if(numero == "45") {
-            nCachorro++;
-        } else if(numero == "20") {
-            nInes++;
-        } else if(numero == "16") {
-            nAnaMaria++;
-        } else if(numero == "11") {
-            nClaudia++;
-        } else if(numero == "80") {
-            nThalita++;
+        switch (numero){
+            case "35":
+                nGretchen++;
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
+                        .child("Candidatos")
+                        .child("Número de votos")
+                        .child("Gretchen");
+                reference.setValue(nGretchen);
+                break;
+
+            case "13":
+                nAnitta++;
+                DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference()
+                        .child("Candidatos")
+                        .child("Número de votos")
+                        .child("Anitta");
+                reference1.setValue(nAnitta);
+                break;
+
+            case "45":
+                nCachorro++;
+                DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference()
+                        .child("Candidatos")
+                        .child("Número de votos")
+                        .child("Cachorro caramelo");
+                reference2.setValue(nCachorro);
+                break;
+
+            case "20":
+                nInes++;
+                DatabaseReference reference3 = FirebaseDatabase.getInstance().getReference()
+                        .child("Candidatos")
+                        .child("Número de votos")
+                        .child("Inês Brasil");
+                reference3.setValue(nInes);
+                break;
+
+            case "16":
+                nAnaMaria++;
+                DatabaseReference reference4 = FirebaseDatabase.getInstance().getReference()
+                        .child("Candidatos")
+                        .child("Número de votos")
+                        .child("Ana Maria Braga");
+                reference4.setValue(nAnaMaria);
+                break;
+
+            case "11":
+                nClaudia++;
+                DatabaseReference reference5 = FirebaseDatabase.getInstance().getReference()
+                        .child("Candidatos")
+                        .child("Número de votos")
+                        .child("Claudia Raia");
+                reference5.setValue(nClaudia);
+                break;
+
+            case "80":
+                nThalita++;
+                DatabaseReference reference6 = FirebaseDatabase.getInstance().getReference()
+                        .child("Candidatos")
+                        .child("Número de votos")
+                        .child("Thalita Meneghim");
+                reference6.setValue(nThalita);
+                break;
         }
 
         mp = MediaPlayer.create(MainActivity.this, R.raw.urna_pronta);
         mp.start();
 
         Toast.makeText(MainActivity.this, "Você votou com sucesso!", Toast.LENGTH_LONG).show();
+        System.out.println(nThalita);
     }
 }
