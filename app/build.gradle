@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.urna"
-        minSdk 27
+        minSdk 28
         targetSdk 32
         versionCode 1
         versionName "1.0"
@@ -42,4 +42,5 @@ dependencies {
 
     implementation platform('com.google.firebase:firebase-bom:30.4.1')
     implementation 'com.google.firebase:firebase-analytics'
+
 }

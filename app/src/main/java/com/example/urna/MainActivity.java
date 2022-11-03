@@ -2,6 +2,8 @@ package com.example.urna;
 
 import static com.google.firebase.firestore.DocumentSnapshot.ServerTimestampBehavior.ESTIMATE;
 
+import static java.lang.Integer.parseInt;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -63,6 +65,36 @@ public class MainActivity extends AppCompatActivity {
 
         iniciarComponentes();
         criarCandidatos();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        String cpfEleitor = cpf.getText().toString();
+
+        if (eleitores.contains(cpfEleitor)){
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
+                    .child("Eleitores que já votaram");
+
+            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot snap : snapshot.getChildren()){
+                        eleitores.add(snap.getValue().toString());
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+//        DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference()
+//                .child("Candidatos")
+//                .child("Número de votos")
+//                .child("Gretchen");
     }
 
     public void iniciarComponentes(){
@@ -174,6 +206,75 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void votar(View t){
+        int numero = parseInt(nCandidato.getText().toString());
+
+        System.out.println(numero);
+
+        switch (numero){
+            case 35:
+                nGretchen++;
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
+                        .child("Candidatos")
+                        .child("Número de votos")
+                        .child("Gretchen");
+                reference.setValue(nGretchen);
+                break;
+
+            case 13:
+                nAnitta++;
+                DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference()
+                        .child("Candidatos")
+                        .child("Número de votos")
+                        .child("Anitta");
+                reference1.setValue(nAnitta);
+                break;
+
+            case 45:
+                nCachorro++;
+                DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference()
+                        .child("Candidatos")
+                        .child("Número de votos")
+                        .child("Cachorro caramelo");
+                reference2.setValue(nCachorro);
+                break;
+
+            case 20:
+                nInes++;
+                DatabaseReference reference3 = FirebaseDatabase.getInstance().getReference()
+                        .child("Candidatos")
+                        .child("Número de votos")
+                        .child("Inês Brasil");
+                reference3.setValue(nInes);
+                break;
+
+            case 16:
+                nAnaMaria++;
+                DatabaseReference reference4 = FirebaseDatabase.getInstance().getReference()
+                        .child("Candidatos")
+                        .child("Número de votos")
+                        .child("Ana Maria Braga");
+                reference4.setValue(nAnaMaria);
+                break;
+
+            case 11:
+                nClaudia++;
+                DatabaseReference reference5 = FirebaseDatabase.getInstance().getReference()
+                        .child("Candidatos")
+                        .child("Número de votos")
+                        .child("Claudia Raia");
+                reference5.setValue(nClaudia);
+                break;
+
+            case 80:
+                nThalita++;
+                DatabaseReference reference6 = FirebaseDatabase.getInstance().getReference()
+                        .child("Candidatos")
+                        .child("Número de votos")
+                        .child("Thalita Meneghim");
+                reference6.setValue(nThalita);
+                break;
+        }
+
         passo2.setVisibility(View.INVISIBLE);
         nCandidato.setVisibility(View.INVISIBLE);
         verificarCandidato.setVisibility(View.INVISIBLE);
@@ -184,73 +285,6 @@ public class MainActivity extends AppCompatActivity {
         cpf.setText("");
         nCandidato.setText("");
         votar.setVisibility(View.INVISIBLE);
-
-        String numero = nCandidato.getText().toString();
-
-        switch (numero){
-            case "35":
-                nGretchen++;
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
-                        .child("Candidatos")
-                        .child("Número de votos")
-                        .child("Gretchen");
-                reference.setValue(nGretchen);
-                break;
-
-            case "13":
-                nAnitta++;
-                DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference()
-                        .child("Candidatos")
-                        .child("Número de votos")
-                        .child("Anitta");
-                reference1.setValue(nAnitta);
-                break;
-
-            case "45":
-                nCachorro++;
-                DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference()
-                        .child("Candidatos")
-                        .child("Número de votos")
-                        .child("Cachorro caramelo");
-                reference2.setValue(nCachorro);
-                break;
-
-            case "20":
-                nInes++;
-                DatabaseReference reference3 = FirebaseDatabase.getInstance().getReference()
-                        .child("Candidatos")
-                        .child("Número de votos")
-                        .child("Inês Brasil");
-                reference3.setValue(nInes);
-                break;
-
-            case "16":
-                nAnaMaria++;
-                DatabaseReference reference4 = FirebaseDatabase.getInstance().getReference()
-                        .child("Candidatos")
-                        .child("Número de votos")
-                        .child("Ana Maria Braga");
-                reference4.setValue(nAnaMaria);
-                break;
-
-            case "11":
-                nClaudia++;
-                DatabaseReference reference5 = FirebaseDatabase.getInstance().getReference()
-                        .child("Candidatos")
-                        .child("Número de votos")
-                        .child("Claudia Raia");
-                reference5.setValue(nClaudia);
-                break;
-
-            case "80":
-                nThalita++;
-                DatabaseReference reference6 = FirebaseDatabase.getInstance().getReference()
-                        .child("Candidatos")
-                        .child("Número de votos")
-                        .child("Thalita Meneghim");
-                reference6.setValue(nThalita);
-                break;
-        }
 
         mp = MediaPlayer.create(MainActivity.this, R.raw.urna_pronta);
         mp.start();

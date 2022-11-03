@@ -21,6 +21,7 @@
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="20sp"
+        android:maxLength="11"
         app:fontFamily="@font/arbutus_slab"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
