@@ -48,14 +48,6 @@ public class MainActivity extends AppCompatActivity {
     Button verificarCandidato, votar;
     MediaPlayer mp;
 
-    int nGretchen = 0;
-    int nAnitta = 0;
-    int nCachorro = 0;
-    int nInes = 0;
-    int nAnaMaria = 0;
-    int nClaudia = 0;
-    int nThalita = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,10 +62,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
                 .child("Eleitores que já votaram");
-
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -200,25 +190,22 @@ public class MainActivity extends AppCompatActivity {
     public void votar(View t){
         int numero = parseInt(nCandidato.getText().toString());
 
-        System.out.println(numero);
-
         switch (numero){
             case 35:
-                nGretchen++;
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
                         .child("Candidatos")
                         .child("Número de votos")
                         .child("Gretchen");
-                reference.addValueEventListener(new ValueEventListener() {
+                reference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()){
-                            int n = Integer.parseInt(snapshot.getValue().toString());
-                            nGretchen = n+1;
-                            reference.setValue(nGretchen);
+                            int qtd = Integer.parseInt(snapshot.getValue().toString());
+                            qtd = qtd+1;
+                            reference.setValue(qtd);
                         } else {
-                            int n = 1;
-                            reference.setValue(n);
+                            int qtd = 1;
+                            reference.setValue(qtd);
                         }
                     }
 
@@ -230,58 +217,154 @@ public class MainActivity extends AppCompatActivity {
             break;
 
             case 13:
-                nAnitta++;
                 DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference()
                         .child("Candidatos")
                         .child("Número de votos")
                         .child("Anitta");
-                reference1.setValue(nAnitta);
-                break;
+                reference1.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()){
+                            int qtd = Integer.parseInt(snapshot.getValue().toString());
+                            qtd = qtd+1;
+                            reference1.setValue(qtd);
+                        } else {
+                            int qtd = 1;
+                            reference1.setValue(qtd);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            break;
 
             case 45:
-                nCachorro++;
                 DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference()
                         .child("Candidatos")
                         .child("Número de votos")
                         .child("Cachorro caramelo");
-                reference2.setValue(nCachorro);
-                break;
+                reference2.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()){
+                            int qtd = Integer.parseInt(snapshot.getValue().toString());
+                            qtd = qtd+1;
+                            reference2.setValue(qtd);
+                        } else {
+                            int qtd = 1;
+                            reference2.setValue(qtd);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            break;
 
             case 20:
-                nInes++;
                 DatabaseReference reference3 = FirebaseDatabase.getInstance().getReference()
                         .child("Candidatos")
                         .child("Número de votos")
                         .child("Inês Brasil");
-                reference3.setValue(nInes);
-                break;
+                reference3.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()){
+                            int qtd = Integer.parseInt(snapshot.getValue().toString());
+                            qtd = qtd+1;
+                            reference3.setValue(qtd);
+                        } else {
+                            int qtd = 1;
+                            reference3.setValue(qtd);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            break;
 
             case 16:
-                nAnaMaria++;
                 DatabaseReference reference4 = FirebaseDatabase.getInstance().getReference()
                         .child("Candidatos")
                         .child("Número de votos")
                         .child("Ana Maria Braga");
-                reference4.setValue(nAnaMaria);
-                break;
+                reference4.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()){
+                            int qtd = Integer.parseInt(snapshot.getValue().toString());
+                            qtd = qtd+1;
+                            reference4.setValue(qtd);
+                        } else {
+                            int qtd = 1;
+                            reference4.setValue(qtd);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            break;
 
             case 11:
-                nClaudia++;
                 DatabaseReference reference5 = FirebaseDatabase.getInstance().getReference()
                         .child("Candidatos")
                         .child("Número de votos")
                         .child("Claudia Raia");
-                reference5.setValue(nClaudia);
-                break;
+                reference5.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()){
+                            int qtd = Integer.parseInt(snapshot.getValue().toString());
+                            qtd = qtd+1;
+                            reference5.setValue(qtd);
+                        } else {
+                            int qtd = 1;
+                            reference5.setValue(qtd);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            break;
 
             case 80:
-                nThalita++;
                 DatabaseReference reference6 = FirebaseDatabase.getInstance().getReference()
                         .child("Candidatos")
                         .child("Número de votos")
                         .child("Thalita Meneghim");
-                reference6.setValue(nThalita);
-                break;
+                reference6.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()){
+                            int qtd = Integer.parseInt(snapshot.getValue().toString());
+                            qtd = qtd+1;
+                            reference6.setValue(qtd);
+                        } else {
+                            int qtd = 1;
+                            reference6.setValue(qtd);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            break;
         }
 
         passo2.setVisibility(View.INVISIBLE);
@@ -299,6 +382,5 @@ public class MainActivity extends AppCompatActivity {
         mp.start();
 
         Toast.makeText(MainActivity.this, "Você votou com sucesso!", Toast.LENGTH_LONG).show();
-        System.out.println(nThalita);
     }
 }
