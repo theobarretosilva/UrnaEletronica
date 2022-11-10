@@ -70,31 +70,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        String cpfEleitor = cpf.getText().toString();
 
-        if (eleitores.contains(cpfEleitor)){
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
-                    .child("Eleitores que já votaram");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
+                .child("Eleitores que já votaram");
 
-            reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for (DataSnapshot snap : snapshot.getChildren()){
-                        eleitores.add(snap.getValue().toString());
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot snap : snapshot.getChildren()){
+                    eleitores.add(snap.getValue().toString());
 
                 }
-            });
-        }
-//        DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference()
-//                .child("Candidatos")
-//                .child("Número de votos")
-//                .child("Gretchen");
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     public void iniciarComponentes(){
@@ -217,8 +209,25 @@ public class MainActivity extends AppCompatActivity {
                         .child("Candidatos")
                         .child("Número de votos")
                         .child("Gretchen");
-                reference.setValue(nGretchen);
-                break;
+                reference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()){
+                            int n = Integer.parseInt(snapshot.getValue().toString());
+                            nGretchen = n+1;
+                            reference.setValue(nGretchen);
+                        } else {
+                            int n = 1;
+                            reference.setValue(n);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            break;
 
             case 13:
                 nAnitta++;
