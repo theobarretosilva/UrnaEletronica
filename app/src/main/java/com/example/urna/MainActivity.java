@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> eleitores = new ArrayList<>();
     ImageView imgCandidato;
     TextView nomeCandidato, numeroCandidato, cargoCandidato, passo2;
-    Button verificarCandidato, votar;
+    Button verificarCandidato, votar, goPontuacao;
     MediaPlayer mp;
 
     @Override
@@ -57,6 +58,10 @@ public class MainActivity extends AppCompatActivity {
 
         iniciarComponentes();
         criarCandidatos();
+
+        goPontuacao.setOnClickListener(view -> {
+            goTelaPontuacao();
+        });
     }
 
     @Override
@@ -89,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         passo2 = findViewById(R.id.passo2);
         verificarCandidato = findViewById(R.id.verificarCnadidato);
         votar = findViewById(R.id.votar);
+        goPontuacao = findViewById(R.id.btnGoPontuacao);
     }
 
     public void criarCandidatos(){
@@ -150,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
                 passo2.setVisibility(View.VISIBLE);
                 nCandidato.setVisibility(View.VISIBLE);
                 verificarCandidato.setVisibility(View.VISIBLE);
+                goPontuacao.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -382,5 +389,10 @@ public class MainActivity extends AppCompatActivity {
         mp.start();
 
         Toast.makeText(MainActivity.this, "Você votou com sucesso!", Toast.LENGTH_LONG).show();
+        goPontuacao.setVisibility(View.VISIBLE);
+    }
+
+    public void goTelaPontuacao() {
+        startActivity(new Intent(MainActivity.this, PontuacaoActivity.class));
     }
 }
