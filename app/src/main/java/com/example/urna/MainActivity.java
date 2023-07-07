@@ -114,6 +114,10 @@ public class MainActivity extends AppCompatActivity {
         lCandidatos.add(claudiaRaia);
         lCandidatos.add(thalita);
         lCandidatos.add(nulo);
+
+        for (Candidato c : lCandidatos) {
+            System.out.println(c);
+        }
     }
 
     public void verificaCPF(View g){
@@ -210,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
                             int qtd = Integer.parseInt(snapshot.getValue().toString());
                             qtd = qtd+1;
                             reference.setValue(qtd);
+
                         } else {
                             int qtd = 1;
                             reference.setValue(qtd);
