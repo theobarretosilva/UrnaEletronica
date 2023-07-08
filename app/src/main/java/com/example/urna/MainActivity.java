@@ -37,6 +37,9 @@ import org.checkerframework.checker.units.qual.A;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
@@ -45,9 +48,13 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Candidato> lCandidatos = new ArrayList<>();
     ArrayList<String> eleitores = new ArrayList<>();
     ImageView imgCandidato;
-    TextView nomeCandidato, numeroCandidato, cargoCandidato, passo2;
+    TextView nomeCandidato, numeroCandidato, cargoCandidato, passo2, textRanking;
     Button verificarCandidato, votar, goPontuacao;
     MediaPlayer mp;
+
+    private DatabaseReference eleitoresReference;
+
+    private Map<String, Candidato> candidatosMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +74,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
+        eleitoresReference = FirebaseDatabase.getInstance().getReference()
                 .child("Eleitores que já votaram");
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+        eleitoresReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot snap : snapshot.getChildren()){
@@ -84,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void iniciarComponentes(){
+    private void iniciarComponentes(){
         cpf = findViewById(R.id.cpfEleitor);
         nCandidato = findViewById(R.id.numeroCandidato);
         imgCandidato = findViewById(R.id.imgCandidato);
@@ -97,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         goPontuacao = findViewById(R.id.btnGoPontuacao);
     }
 
-    public void criarCandidatos(){
+    private void criarCandidatos(){
         Candidato gretchen = new Candidato("Gretchen", "Presidenta", "35", "gretchen", 0);
         Candidato anitta = new Candidato("Anitta", "Presidenta", "13", "anitta", 0);
         Candidato cachorro = new Candidato("Cachorro caramelo", "Presidente", "45", "cachorro", 0);
@@ -116,19 +123,17 @@ public class MainActivity extends AppCompatActivity {
         lCandidatos.add(nulo);
 
         for (Candidato c : lCandidatos) {
-            System.out.println(c);
+            candidatosMap.put(c.getNumero(), c);
         }
     }
 
     public void verificaCPF(View g){
         String cpfEleitor = cpf.getText().toString();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
-                .child("Eleitores que já votaram");
 
         if (eleitores.isEmpty()){
             mandaCPF();
         } else {
-            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            eleitoresReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     String eleitoresBD = snapshot.getValue().toString();
@@ -147,13 +152,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void mandaCPF(){
+    private void mandaCPF(){
         String cpfEleitor = cpf.getText().toString();
         eleitores.add(cpfEleitor);
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
-                .child("Eleitores que já votaram");
-        reference.setValue(eleitores).addOnSuccessListener(unused -> {
+        eleitoresReference.setValue(eleitores).addOnSuccessListener(unused -> {
             Toast.makeText(MainActivity.this, "CPF não cadastrado, pode votar!", Toast.LENGTH_LONG).show();
             passo2.setVisibility(View.VISIBLE);
             nCandidato.setVisibility(View.VISIBLE);
@@ -170,314 +173,72 @@ public class MainActivity extends AppCompatActivity {
         cargoCandidato.setVisibility(View.VISIBLE);
         votar.setVisibility(View.VISIBLE);
 
-        for (Candidato c : lCandidatos){
-            if (numero.equals(c.numero)){
-                String nomeDoCandidato = c.getNome();
-                nomeCandidato.setText(nomeDoCandidato);
-                numeroCandidato.setText(c.getNumero());
-                cargoCandidato.setText(c.getCargo());
-                if (nomeDoCandidato.equals("Gretchen")){
-                    imgCandidato.setImageResource(R.drawable.gretchen);
-                }else if (nomeDoCandidato.equals("Anitta")){
-                    imgCandidato.setImageResource(R.drawable.anitta);
-                }else if (nomeDoCandidato.equals("Cachorro caramelo")){
-                    imgCandidato.setImageResource(R.drawable.cachorro);
-                }else if (nomeDoCandidato.equals("Inês Brasil")){
-                    imgCandidato.setImageResource(R.drawable.inesbrasil);
-                }else if(nomeDoCandidato.equals("Ana Maria Braga")){
-                    imgCandidato.setImageResource(R.drawable.anamariabraga);
-                }else if(nomeDoCandidato.equals("Cláudia Raia")){
-                    imgCandidato.setImageResource(R.drawable.claudiaraia);
-                }else if(nomeDoCandidato.equals("Thalita Meneghim")){
-                    imgCandidato.setImageResource(R.drawable.thalita);
-                }
-            }
+        Candidato candidato = candidatosMap.get(numero);
+
+        if (candidato != null){
+            nomeCandidato.setText(candidato.getNome());
+            numeroCandidato.setText(candidato.getNumero());
+            cargoCandidato.setText(candidato.getCargo());
+            int imageResource = getResources().getIdentifier(candidato.getCaminhoFoto(), "drawable", getPackageName());
+            imgCandidato.setImageResource(imageResource);
         }
     }
 
     public void votar(View t){
         int numero = parseInt(nCandidato.getText().toString());
 
-        switch (numero){
-            case 35:
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
-                        .child("Candidatos")
-                        .child("Número de votos")
-                        .child("Gretchen");
-                reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()){
-                            int qtd = Integer.parseInt(snapshot.getValue().toString());
-                            qtd = qtd+1;
-                            reference.setValue(qtd);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
+                .child("Candidatos")
+                .child("Número de votos")
+                .child(candidatosMap.get(String.valueOf(numero)).getNome());
 
-                            for (Candidato c : lCandidatos){
-                                if (c.nome.equals("Gretchen")) {
-                                    c.quantidadeVotos = qtd;
-                                }
-                            }
-                        } else {
-                            int qtd = 1;
-                            reference.setValue(qtd);
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int qtd;
+                if (snapshot.exists()) {
+                    qtd = Integer.parseInt(snapshot.getValue().toString());
+                    qtd = qtd + 1;
+                } else {
+                    qtd = 1;
+                }
+                reference.setValue(qtd);
 
-                            for (Candidato c : lCandidatos){
-                                if (c.nome.equals("Gretchen")) {
-                                    c.quantidadeVotos = qtd;
-                                }
-                            }
-                        }
-                    }
+                Candidato candidato = candidatosMap.get(String.valueOf(numero));
+                if (candidato != null) {
+                    candidato.setQuantidadeVotos(qtd);
+                }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                passo2.setVisibility(View.INVISIBLE);
+                nCandidato.setVisibility(View.INVISIBLE);
+                verificarCandidato.setVisibility(View.INVISIBLE);
+                imgCandidato.setVisibility(View.INVISIBLE);
+                nomeCandidato.setVisibility(View.INVISIBLE);
+                numeroCandidato.setVisibility(View.INVISIBLE);
+                cargoCandidato.setVisibility(View.INVISIBLE);
+                cpf.setText("");
+                nCandidato.setText("");
+                votar.setVisibility(View.INVISIBLE);
 
-                    }
-                });
-            break;
+                mp = MediaPlayer.create(MainActivity.this, R.raw.urna_pronta);
+                mp.start();
 
-            case 13:
-                DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference()
-                        .child("Candidatos")
-                        .child("Número de votos")
-                        .child("Anitta");
-                reference1.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()){
-                            int qtd = Integer.parseInt(snapshot.getValue().toString());
-                            qtd = qtd+1;
-                            reference1.setValue(qtd);
+                Toast.makeText(MainActivity.this, "Você votou com sucesso!", Toast.LENGTH_LONG).show();
+                goPontuacao.setVisibility(View.VISIBLE);
+            }
 
-                            for (Candidato c : lCandidatos){
-                                if (c.nome.equals("Anitta")) {
-                                    c.quantidadeVotos = qtd;
-                                }
-                            }
-                        } else {
-                            int qtd = 1;
-                            reference1.setValue(qtd);
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                            for (Candidato c : lCandidatos){
-                                if (c.nome.equals("Anitta")) {
-                                    c.quantidadeVotos = qtd;
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-            break;
-
-            case 45:
-                DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference()
-                        .child("Candidatos")
-                        .child("Número de votos")
-                        .child("Cachorro caramelo");
-                reference2.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()){
-                            int qtd = Integer.parseInt(snapshot.getValue().toString());
-                            qtd = qtd+1;
-                            reference2.setValue(qtd);
-
-                            for (Candidato c : lCandidatos){
-                                if (c.nome.equals("Cachorro caramelo")) {
-                                    c.quantidadeVotos = qtd;
-                                }
-                            }
-                        } else {
-                            int qtd = 1;
-                            reference2.setValue(qtd);
-
-                            for (Candidato c : lCandidatos){
-                                if (c.nome.equals("Cachorro caramelo")) {
-                                    c.quantidadeVotos = qtd;
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-            break;
-
-            case 20:
-                DatabaseReference reference3 = FirebaseDatabase.getInstance().getReference()
-                        .child("Candidatos")
-                        .child("Número de votos")
-                        .child("Inês Brasil");
-                reference3.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()){
-                            int qtd = Integer.parseInt(snapshot.getValue().toString());
-                            qtd = qtd+1;
-                            reference3.setValue(qtd);
-
-                            for (Candidato c : lCandidatos){
-                                if (c.nome.equals("Inês Brasil")) {
-                                    c.quantidadeVotos = qtd;
-                                }
-                            }
-                        } else {
-                            int qtd = 1;
-                            reference3.setValue(qtd);
-
-                            for (Candidato c : lCandidatos){
-                                if (c.nome.equals("Inês Brasil")) {
-                                    c.quantidadeVotos = qtd;
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-            break;
-
-            case 16:
-                DatabaseReference reference4 = FirebaseDatabase.getInstance().getReference()
-                        .child("Candidatos")
-                        .child("Número de votos")
-                        .child("Ana Maria Braga");
-                reference4.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()){
-                            int qtd = Integer.parseInt(snapshot.getValue().toString());
-                            qtd = qtd+1;
-                            reference4.setValue(qtd);
-
-                            for (Candidato c : lCandidatos){
-                                if (c.nome.equals("Ana Maria Braga")) {
-                                    c.quantidadeVotos = qtd;
-                                }
-                            }
-                        } else {
-                            int qtd = 1;
-                            reference4.setValue(qtd);
-
-                            for (Candidato c : lCandidatos){
-                                if (c.nome.equals("Ana Maria Braga")) {
-                                    c.quantidadeVotos = qtd;
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-            break;
-
-            case 11:
-                DatabaseReference reference5 = FirebaseDatabase.getInstance().getReference()
-                        .child("Candidatos")
-                        .child("Número de votos")
-                        .child("Claudia Raia");
-                reference5.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()){
-                            int qtd = Integer.parseInt(snapshot.getValue().toString());
-                            qtd = qtd+1;
-                            reference5.setValue(qtd);
-
-                            for (Candidato c : lCandidatos){
-                                if (c.nome.equals("Claudia Raia")) {
-                                    c.quantidadeVotos = qtd;
-                                }
-                            }
-                        } else {
-                            int qtd = 1;
-                            reference5.setValue(qtd);
-
-                            for (Candidato c : lCandidatos){
-                                if (c.nome.equals("Claudia Raia")) {
-                                    c.quantidadeVotos = qtd;
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-            break;
-
-            case 80:
-                DatabaseReference reference6 = FirebaseDatabase.getInstance().getReference()
-                        .child("Candidatos")
-                        .child("Número de votos")
-                        .child("Thalita Meneghim");
-                reference6.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()){
-                            int qtd = Integer.parseInt(snapshot.getValue().toString());
-                            qtd = qtd+1;
-                            reference6.setValue(qtd);
-
-                            for (Candidato c : lCandidatos){
-                                if (c.nome.equals("Thalita Meneghim")) {
-                                    c.quantidadeVotos = qtd;
-                                }
-                            }
-                        } else {
-                            int qtd = 1;
-                            reference6.setValue(qtd);
-
-                            for (Candidato c : lCandidatos){
-                                if (c.nome.equals("Thalita Meneghim")) {
-                                    c.quantidadeVotos = qtd;
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-            break;
-        }
-
-        passo2.setVisibility(View.INVISIBLE);
-        nCandidato.setVisibility(View.INVISIBLE);
-        verificarCandidato.setVisibility(View.INVISIBLE);
-        imgCandidato.setVisibility(View.INVISIBLE);
-        nomeCandidato.setVisibility(View.INVISIBLE);
-        numeroCandidato.setVisibility(View.INVISIBLE);
-        cargoCandidato.setVisibility(View.INVISIBLE);
-        cpf.setText("");
-        nCandidato.setText("");
-        votar.setVisibility(View.INVISIBLE);
-
-        mp = MediaPlayer.create(MainActivity.this, R.raw.urna_pronta);
-        mp.start();
-
-        Toast.makeText(MainActivity.this, "Você votou com sucesso!", Toast.LENGTH_LONG).show();
-        goPontuacao.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     public void goTelaPontuacao() {
-        startActivity(new Intent(MainActivity.this, PontuacaoActivity.class));
+        Intent intent = new Intent(MainActivity.this, PontuacaoActivity.class);
+        intent.putExtra("candidatos", lCandidatos);
+        startActivity(intent);
     }
+
+
 }

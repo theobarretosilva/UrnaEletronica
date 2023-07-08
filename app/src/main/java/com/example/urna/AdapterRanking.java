@@ -12,10 +12,10 @@ import java.util.List;
 
 public class AdapterRanking extends RecyclerView.Adapter<AdapterRanking.MyViewHolder> {
 
-    private List<Ranking> rankingList;
+    private List<Candidato> candidatoList;
 
-    public AdapterRanking(List<Ranking> rankingList) {
-        this.rankingList = rankingList;
+    public AdapterRanking(List<Candidato> candidatoList) {
+        this.candidatoList = candidatoList;
     }
 
     @NonNull
@@ -27,15 +27,12 @@ public class AdapterRanking extends RecyclerView.Adapter<AdapterRanking.MyViewHo
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Ranking ranking = rankingList.get(position);
-
-        holder.candidato.setText(ranking.getCandidato());
-        holder.pontuacao.setText((int) ranking.getPontuacao());
+        Candidato candidato = candidatoList.get(position);
     }
 
     @Override
     public int getItemCount() {
-        return rankingList.size();
+        return candidatoList.size();
     }
 
     static class MyViewHolder extends RecyclerView.ViewHolder{
