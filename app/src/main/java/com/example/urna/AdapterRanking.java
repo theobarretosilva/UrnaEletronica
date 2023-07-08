@@ -8,14 +8,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class AdapterRanking extends RecyclerView.Adapter<AdapterRanking.MyViewHolder> {
 
-    private List<Candidato> candidatoList;
+    private List<Candidato> lCandidatos;
+    private List<Candidato> restoCandidatos;
 
     public AdapterRanking(List<Candidato> candidatoList) {
-        this.candidatoList = candidatoList;
+        this.lCandidatos = candidatoList;
+
+        obterRestoCandidatos();
+        restoCandidatos = obterRestoCandidatos();
     }
 
     @NonNull
@@ -27,12 +33,15 @@ public class AdapterRanking extends RecyclerView.Adapter<AdapterRanking.MyViewHo
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Candidato candidato = candidatoList.get(position);
+        Candidato candidato = restoCandidatos.get(position);
+        holder.txtPosicao.setText(String.valueOf(candidato.getColocacao()));
+        holder.candidato.setText(candidato.getNome());
+        holder.pontuacao.setText(String.valueOf(candidato.getQuantidadeVotos()));
     }
 
     @Override
     public int getItemCount() {
-        return candidatoList.size();
+        return lCandidatos.size();
     }
 
     static class MyViewHolder extends RecyclerView.ViewHolder{
@@ -46,6 +55,14 @@ public class AdapterRanking extends RecyclerView.Adapter<AdapterRanking.MyViewHo
             candidato = itemView.findViewById(R.id.candidato);
             pontuacao = itemView.findViewById(R.id.pontuacao);
         }
+    }
+
+    private List<Candidato> obterRestoCandidatos() {
+        lCandidatos.sort(Comparator.comparingInt(Candidato::getQuantidadeVotos).reversed());
+        if (!lCandidatos.isEmpty()) {
+            lCandidatos = lCandidatos.subList(1, lCandidatos.size());
+        }
+        return Collections.emptyList();
     }
 
 }

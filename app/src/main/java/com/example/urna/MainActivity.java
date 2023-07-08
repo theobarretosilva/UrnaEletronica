@@ -105,14 +105,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void criarCandidatos(){
-        Candidato gretchen = new Candidato("Gretchen", "Presidenta", "35", "gretchen", 0);
-        Candidato anitta = new Candidato("Anitta", "Presidenta", "13", "anitta", 0);
-        Candidato cachorro = new Candidato("Cachorro caramelo", "Presidente", "45", "cachorro", 0);
-        Candidato ines = new Candidato("Inês Brasil", "Presidenta", "20", "inesbrasil", 0);
-        Candidato anaMaria = new Candidato("Ana Maria Braga", "Presidenta", "16", "anamariabraga", 0);
-        Candidato claudiaRaia = new Candidato("Cláudia Raia", "Presidenta", "11", "claudiaraia", 0);
-        Candidato thalita = new Candidato("Thalita Meneghim", "Presidenta", "80", "thalita", 0);
-        Candidato nulo = new Candidato("Nulo", "Presidente", "", "", 0);
+        Candidato gretchen = new Candidato("Gretchen", "Presidenta", "35", "gretchen", 0, 0);
+        Candidato anitta = new Candidato("Anitta", "Presidenta", "13", "anitta", 0, 0);
+        Candidato cachorro = new Candidato("Cachorro caramelo", "Presidente", "45", "cachorro", 0, 0);
+        Candidato ines = new Candidato("Inês Brasil", "Presidenta", "20", "inesbrasil", 0, 0);
+        Candidato anaMaria = new Candidato("Ana Maria Braga", "Presidenta", "16", "anamariabraga", 0, 0);
+        Candidato claudiaRaia = new Candidato("Cláudia Raia", "Presidenta", "11", "claudiaraia", 0, 0);
+        Candidato thalita = new Candidato("Thalita Meneghim", "Presidenta", "80", "thalita", 0, 0);
+        Candidato nulo = new Candidato("Nulo", "Presidente", "", "", 0, 0);
         lCandidatos.add(gretchen);
         lCandidatos.add(anitta);
         lCandidatos.add(cachorro);

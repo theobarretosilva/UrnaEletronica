@@ -7,13 +7,15 @@ public class Candidato implements Parcelable {
 
     String nome, cargo, numero, caminhoFoto;
     int quantidadeVotos;
+    private int colocacao;
 
-    public Candidato(String nome, String cargo, String numero, String caminhoFoto, int quantidadeVotos) {
+    public Candidato(String nome, String cargo, String numero, String caminhoFoto, int quantidadeVotos, int colocacao) {
         this.nome = nome;
         this.cargo = cargo;
         this.numero = numero;
         this.caminhoFoto = caminhoFoto;
         this.quantidadeVotos = quantidadeVotos;
+        this.colocacao = colocacao;
     }
 
     public Candidato() {
@@ -73,6 +75,13 @@ public class Candidato implements Parcelable {
     }
     public void setQuantidadeVotos(int quantidadeVotos) {
         this.quantidadeVotos = quantidadeVotos;
+    }
+
+    public int getColocacao() {
+        return colocacao;
+    }
+    public void setColocacao(int colocacao) {
+        this.colocacao = colocacao;
     }
 
     @Override

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -47,6 +48,7 @@ public class PontuacaoActivity extends AppCompatActivity {
 
         configRecyclerView();
         montarRanking();
+        AdapterRanking ranking = new AdapterRanking(lCandidatos);
         setarFirstCandidate();
     }
 
@@ -63,6 +65,7 @@ public class PontuacaoActivity extends AppCompatActivity {
         StringBuilder ranking = new StringBuilder("Ranking dos Candidatos:\n");
         for (int i = 0; i < lCandidatos.size(); i++) {
             Candidato candidato = lCandidatos.get(i);
+            candidato.setColocacao(i + 1);
             ranking.append((i + 1)).append(". ").append(candidato.getNome()).append(" - Votos: ").append(candidato.getQuantidadeVotos()).append("\n");
         }
     }
