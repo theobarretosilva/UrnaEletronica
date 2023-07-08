@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import com.google.android.gms.common.internal.service.Common;
 import com.google.firebase.database.DataSnapshot;
@@ -24,6 +25,8 @@ public class PontuacaoActivity extends AppCompatActivity {
     private List<Ranking> rankingList = new ArrayList<>();
     private RecyclerView rvRanking;
 
+    TextView teste;
+
     int sum = 0;
 
     @Override
@@ -32,10 +35,18 @@ public class PontuacaoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pontuacao);
         getWindow().setStatusBarColor(Color.rgb(34,87,122));
         getSupportActionBar().hide();
+        Candidato candidato = new Candidato();
 
         rvRanking = findViewById(R.id.rvRanking);
+        teste = findViewById(R.id.testeTxt);
+
+        for (Candidato c : candidato){
+            teste.setText(c.getNome());
+        }
 
         configRecyclerView();
+
+
     }
 
     private void configRecyclerView() {

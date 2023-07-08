@@ -153,15 +153,12 @@ public class MainActivity extends AppCompatActivity {
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
                 .child("Eleitores que já votaram");
-        reference.setValue(eleitores).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Toast.makeText(MainActivity.this, "CPF não cadastrado, pode votar!", Toast.LENGTH_LONG).show();
-                passo2.setVisibility(View.VISIBLE);
-                nCandidato.setVisibility(View.VISIBLE);
-                verificarCandidato.setVisibility(View.VISIBLE);
-                goPontuacao.setVisibility(View.INVISIBLE);
-            }
+        reference.setValue(eleitores).addOnSuccessListener(unused -> {
+            Toast.makeText(MainActivity.this, "CPF não cadastrado, pode votar!", Toast.LENGTH_LONG).show();
+            passo2.setVisibility(View.VISIBLE);
+            nCandidato.setVisibility(View.VISIBLE);
+            verificarCandidato.setVisibility(View.VISIBLE);
+            goPontuacao.setVisibility(View.INVISIBLE);
         });
     }
 
@@ -215,9 +212,20 @@ public class MainActivity extends AppCompatActivity {
                             qtd = qtd+1;
                             reference.setValue(qtd);
 
+                            for (Candidato c : lCandidatos){
+                                if (c.nome.equals("Gretchen")) {
+                                    c.quantidadeVotos = qtd;
+                                }
+                            }
                         } else {
                             int qtd = 1;
                             reference.setValue(qtd);
+
+                            for (Candidato c : lCandidatos){
+                                if (c.nome.equals("Gretchen")) {
+                                    c.quantidadeVotos = qtd;
+                                }
+                            }
                         }
                     }
 
@@ -240,9 +248,21 @@ public class MainActivity extends AppCompatActivity {
                             int qtd = Integer.parseInt(snapshot.getValue().toString());
                             qtd = qtd+1;
                             reference1.setValue(qtd);
+
+                            for (Candidato c : lCandidatos){
+                                if (c.nome.equals("Anitta")) {
+                                    c.quantidadeVotos = qtd;
+                                }
+                            }
                         } else {
                             int qtd = 1;
                             reference1.setValue(qtd);
+
+                            for (Candidato c : lCandidatos){
+                                if (c.nome.equals("Anitta")) {
+                                    c.quantidadeVotos = qtd;
+                                }
+                            }
                         }
                     }
 
@@ -265,9 +285,21 @@ public class MainActivity extends AppCompatActivity {
                             int qtd = Integer.parseInt(snapshot.getValue().toString());
                             qtd = qtd+1;
                             reference2.setValue(qtd);
+
+                            for (Candidato c : lCandidatos){
+                                if (c.nome.equals("Cachorro caramelo")) {
+                                    c.quantidadeVotos = qtd;
+                                }
+                            }
                         } else {
                             int qtd = 1;
                             reference2.setValue(qtd);
+
+                            for (Candidato c : lCandidatos){
+                                if (c.nome.equals("Cachorro caramelo")) {
+                                    c.quantidadeVotos = qtd;
+                                }
+                            }
                         }
                     }
 
@@ -290,9 +322,21 @@ public class MainActivity extends AppCompatActivity {
                             int qtd = Integer.parseInt(snapshot.getValue().toString());
                             qtd = qtd+1;
                             reference3.setValue(qtd);
+
+                            for (Candidato c : lCandidatos){
+                                if (c.nome.equals("Inês Brasil")) {
+                                    c.quantidadeVotos = qtd;
+                                }
+                            }
                         } else {
                             int qtd = 1;
                             reference3.setValue(qtd);
+
+                            for (Candidato c : lCandidatos){
+                                if (c.nome.equals("Inês Brasil")) {
+                                    c.quantidadeVotos = qtd;
+                                }
+                            }
                         }
                     }
 
@@ -315,9 +359,21 @@ public class MainActivity extends AppCompatActivity {
                             int qtd = Integer.parseInt(snapshot.getValue().toString());
                             qtd = qtd+1;
                             reference4.setValue(qtd);
+
+                            for (Candidato c : lCandidatos){
+                                if (c.nome.equals("Ana Maria Braga")) {
+                                    c.quantidadeVotos = qtd;
+                                }
+                            }
                         } else {
                             int qtd = 1;
                             reference4.setValue(qtd);
+
+                            for (Candidato c : lCandidatos){
+                                if (c.nome.equals("Ana Maria Braga")) {
+                                    c.quantidadeVotos = qtd;
+                                }
+                            }
                         }
                     }
 
@@ -340,9 +396,21 @@ public class MainActivity extends AppCompatActivity {
                             int qtd = Integer.parseInt(snapshot.getValue().toString());
                             qtd = qtd+1;
                             reference5.setValue(qtd);
+
+                            for (Candidato c : lCandidatos){
+                                if (c.nome.equals("Claudia Raia")) {
+                                    c.quantidadeVotos = qtd;
+                                }
+                            }
                         } else {
                             int qtd = 1;
                             reference5.setValue(qtd);
+
+                            for (Candidato c : lCandidatos){
+                                if (c.nome.equals("Claudia Raia")) {
+                                    c.quantidadeVotos = qtd;
+                                }
+                            }
                         }
                     }
 
@@ -365,9 +433,21 @@ public class MainActivity extends AppCompatActivity {
                             int qtd = Integer.parseInt(snapshot.getValue().toString());
                             qtd = qtd+1;
                             reference6.setValue(qtd);
+
+                            for (Candidato c : lCandidatos){
+                                if (c.nome.equals("Thalita Meneghim")) {
+                                    c.quantidadeVotos = qtd;
+                                }
+                            }
                         } else {
                             int qtd = 1;
                             reference6.setValue(qtd);
+
+                            for (Candidato c : lCandidatos){
+                                if (c.nome.equals("Thalita Meneghim")) {
+                                    c.quantidadeVotos = qtd;
+                                }
+                            }
                         }
                     }
 
