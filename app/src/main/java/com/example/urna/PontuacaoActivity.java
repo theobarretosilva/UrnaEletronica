@@ -1,13 +1,18 @@
 package com.example.urna;
 
+import static java.lang.Integer.parseInt;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,9 +34,11 @@ public class PontuacaoActivity extends AppCompatActivity {
     private RecyclerView rvRanking;
 
     List<Candidato> lCandidatos;
-
     ImageView cand1;
     TextView nomeCand1;
+
+    private DatabaseReference votosReference;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +56,29 @@ public class PontuacaoActivity extends AppCompatActivity {
         configRecyclerView();
         montarRanking();
         setarFirstCandidate();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        votosReference = FirebaseDatabase.getInstance().getReference()
+                .child("Candidatos")
+                .child("Número de votos");
+
+        votosReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void configRecyclerView() {
@@ -85,5 +115,10 @@ public class PontuacaoActivity extends AppCompatActivity {
             cand1.setImageResource(imageResource);
             nomeCand1.setText(primeiroColocado.getNome() + " - " + primeiroColocado.getQuantidadeVotos());
         }
+    }
+
+    public void voltarTela(View btnVoltar) {
+        ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), R.anim.fade_in, R.anim.mover_direita);
+        ActivityCompat.startActivity(PontuacaoActivity.this, new Intent(this, MainActivity.class), activityOptionsCompat.toBundle());
     }
 }

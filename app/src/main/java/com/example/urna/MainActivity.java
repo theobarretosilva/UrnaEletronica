@@ -8,11 +8,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -128,6 +130,8 @@ public class MainActivity extends AppCompatActivity {
         verificarCandidato = findViewById(R.id.verificarCnadidato);
         votar = findViewById(R.id.votar);
         goPontuacao = findViewById(R.id.btnGoPontuacao);
+
+        CPFFormatter cpfFormatter = new CPFFormatter(cpf);
     }
 
     private void criarCandidatos(){
@@ -160,11 +164,13 @@ public class MainActivity extends AppCompatActivity {
             eleitoresReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    String eleitoresBD = snapshot.getValue().toString();
-                    if (eleitoresBD.contains(cpfEleitor)){
-                        Toast.makeText(MainActivity.this, "Este eleitor já votou!", Toast.LENGTH_LONG).show();
-                    }else {
-                        mandaCPF();
+                    if (snapshot.exists()) {
+                        String eleitoresBD = snapshot.getValue().toString();
+                        if (eleitoresBD.contains(cpfEleitor)){
+                            Toast.makeText(MainActivity.this, "Este eleitor já votou!", Toast.LENGTH_LONG).show();
+                        }else {
+                            mandaCPF();
+                        }
                     }
                 }
 
@@ -205,6 +211,8 @@ public class MainActivity extends AppCompatActivity {
             cargoCandidato.setText(candidato.getCargo());
             int imageResource = getResources().getIdentifier(candidato.getCaminhoFoto(), "drawable", getPackageName());
             imgCandidato.setImageResource(imageResource);
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(nCandidato.getWindowToken(), 0);
         }
     }
 
