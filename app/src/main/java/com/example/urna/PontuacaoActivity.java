@@ -48,14 +48,13 @@ public class PontuacaoActivity extends AppCompatActivity {
 
         configRecyclerView();
         montarRanking();
-        AdapterRanking ranking = new AdapterRanking(lCandidatos);
         setarFirstCandidate();
     }
 
     private void configRecyclerView() {
         rvRanking.setLayoutManager(new LinearLayoutManager(this));
         rvRanking.setHasFixedSize(true);
-        adapterRanking = new AdapterRanking(lCandidatos);
+        adapterRanking = new AdapterRanking(lCandidatos, this);
         rvRanking.setAdapter(adapterRanking);
     }
 
@@ -68,6 +67,7 @@ public class PontuacaoActivity extends AppCompatActivity {
             candidato.setColocacao(i + 1);
             ranking.append((i + 1)).append(". ").append(candidato.getNome()).append(" - Votos: ").append(candidato.getQuantidadeVotos()).append("\n");
         }
+        adapterRanking.notifyDataSetChanged();
     }
 
     private Candidato obterPrimeiroColocado() {
@@ -83,7 +83,7 @@ public class PontuacaoActivity extends AppCompatActivity {
         if (primeiroColocado != null) {
             int imageResource = getResources().getIdentifier(primeiroColocado.getCaminhoFoto(), "drawable", getPackageName());
             cand1.setImageResource(imageResource);
-            nomeCand1.setText(primeiroColocado.getNome());
+            nomeCand1.setText(primeiroColocado.getNome() + " - " + primeiroColocado.getQuantidadeVotos());
         }
     }
 }

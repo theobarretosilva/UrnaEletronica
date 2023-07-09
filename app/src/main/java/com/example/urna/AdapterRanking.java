@@ -1,13 +1,16 @@
 package com.example.urna;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -16,9 +19,11 @@ public class AdapterRanking extends RecyclerView.Adapter<AdapterRanking.MyViewHo
 
     private List<Candidato> lCandidatos;
     private List<Candidato> restoCandidatos;
+    private Context context;
 
-    public AdapterRanking(List<Candidato> candidatoList) {
+    public AdapterRanking(List<Candidato> candidatoList, Context context) {
         this.lCandidatos = candidatoList;
+        this.context = context;
 
         obterRestoCandidatos();
         restoCandidatos = obterRestoCandidatos();
@@ -33,36 +38,44 @@ public class AdapterRanking extends RecyclerView.Adapter<AdapterRanking.MyViewHo
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Candidato candidato = restoCandidatos.get(position);
-        holder.txtPosicao.setText(String.valueOf(candidato.getColocacao()));
-        holder.candidato.setText(candidato.getNome());
-        holder.pontuacao.setText(String.valueOf(candidato.getQuantidadeVotos()));
+        if (position >= 0 && position < restoCandidatos.size()) {
+            Candidato candidato = restoCandidatos.get(position);
+
+            int imageResource = context.getResources().getIdentifier(candidato.getCaminhoFoto(), "drawable", context.getPackageName());
+            holder.imgCandidato.setImageResource(imageResource);
+            holder.candidato.setText(candidato.getNome());
+            holder.pontuacao.setText(String.valueOf(candidato.getQuantidadeVotos()));
+        }
     }
 
     @Override
     public int getItemCount() {
-        return lCandidatos.size();
+        return restoCandidatos.size();
     }
 
     static class MyViewHolder extends RecyclerView.ViewHolder{
 
-        TextView txtPosicao, candidato, pontuacao;
+        TextView candidato, pontuacao;
+        ImageView imgCandidato;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            txtPosicao = itemView.findViewById(R.id.txtPosicao);
+            imgCandidato = itemView.findViewById(R.id.imgCandidato);
             candidato = itemView.findViewById(R.id.candidato);
             pontuacao = itemView.findViewById(R.id.pontuacao);
         }
     }
 
     private List<Candidato> obterRestoCandidatos() {
-        lCandidatos.sort(Comparator.comparingInt(Candidato::getQuantidadeVotos).reversed());
-        if (!lCandidatos.isEmpty()) {
-            lCandidatos = lCandidatos.subList(1, lCandidatos.size());
-        }
-        return Collections.emptyList();
-    }
+        List<Candidato> copiaCandidatos = new ArrayList<>(lCandidatos);
+        copiaCandidatos.sort(Comparator.comparingInt(Candidato::getQuantidadeVotos).reversed());
 
+        if (!copiaCandidatos.isEmpty()) {
+            Candidato primeiroCandidato = copiaCandidatos.get(0);
+            copiaCandidatos.remove(primeiroCandidato);
+        }
+
+        return copiaCandidatos;
+    }
 }

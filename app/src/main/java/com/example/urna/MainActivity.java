@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     MediaPlayer mp;
 
     private DatabaseReference eleitoresReference;
+    private DatabaseReference votosReference;
 
     private Map<String, Candidato> candidatosMap = new HashMap<>();
 
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
         eleitoresReference = FirebaseDatabase.getInstance().getReference()
                 .child("Eleitores que já votaram");
         eleitoresReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -89,6 +91,30 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        for (Candidato c:lCandidatos) {
+            votosReference = FirebaseDatabase.getInstance().getReference()
+                    .child("Candidatos")
+                    .child("Número de votos")
+                    .child(candidatosMap.get(String.valueOf(c.getNumero())).getNome());
+
+            votosReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        Candidato candidato = candidatosMap.get(String.valueOf(c.getNumero()));
+                        if (candidato != null) {
+                            candidato.setQuantidadeVotos(parseInt(snapshot.getValue().toString()));
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
     }
 
     private void iniciarComponentes(){
@@ -112,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
         Candidato anaMaria = new Candidato("Ana Maria Braga", "Presidenta", "16", "anamariabraga", 0, 0);
         Candidato claudiaRaia = new Candidato("Cláudia Raia", "Presidenta", "11", "claudiaraia", 0, 0);
         Candidato thalita = new Candidato("Thalita Meneghim", "Presidenta", "80", "thalita", 0, 0);
-        Candidato nulo = new Candidato("Nulo", "Presidente", "", "", 0, 0);
         lCandidatos.add(gretchen);
         lCandidatos.add(anitta);
         lCandidatos.add(cachorro);
@@ -120,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
         lCandidatos.add(anaMaria);
         lCandidatos.add(claudiaRaia);
         lCandidatos.add(thalita);
-        lCandidatos.add(nulo);
 
         for (Candidato c : lCandidatos) {
             candidatosMap.put(c.getNumero(), c);
@@ -208,23 +232,6 @@ public class MainActivity extends AppCompatActivity {
                 if (candidato != null) {
                     candidato.setQuantidadeVotos(qtd);
                 }
-
-                passo2.setVisibility(View.INVISIBLE);
-                nCandidato.setVisibility(View.INVISIBLE);
-                verificarCandidato.setVisibility(View.INVISIBLE);
-                imgCandidato.setVisibility(View.INVISIBLE);
-                nomeCandidato.setVisibility(View.INVISIBLE);
-                numeroCandidato.setVisibility(View.INVISIBLE);
-                cargoCandidato.setVisibility(View.INVISIBLE);
-                cpf.setText("");
-                nCandidato.setText("");
-                votar.setVisibility(View.INVISIBLE);
-
-                mp = MediaPlayer.create(MainActivity.this, R.raw.urna_pronta);
-                mp.start();
-
-                Toast.makeText(MainActivity.this, "Você votou com sucesso!", Toast.LENGTH_LONG).show();
-                goPontuacao.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -232,6 +239,23 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        passo2.setVisibility(View.INVISIBLE);
+        nCandidato.setVisibility(View.INVISIBLE);
+        verificarCandidato.setVisibility(View.INVISIBLE);
+        imgCandidato.setVisibility(View.INVISIBLE);
+        nomeCandidato.setVisibility(View.INVISIBLE);
+        numeroCandidato.setVisibility(View.INVISIBLE);
+        cargoCandidato.setVisibility(View.INVISIBLE);
+        cpf.setText("");
+        nCandidato.setText("");
+        votar.setVisibility(View.INVISIBLE);
+
+        mp = MediaPlayer.create(MainActivity.this, R.raw.urna_pronta);
+        mp.start();
+
+        Toast.makeText(MainActivity.this, "Você votou com sucesso!", Toast.LENGTH_LONG).show();
+        goPontuacao.setVisibility(View.VISIBLE);
     }
 
     public void goTelaPontuacao() {
@@ -239,6 +263,4 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("candidatos", lCandidatos);
         startActivity(intent);
     }
-
-
 }
