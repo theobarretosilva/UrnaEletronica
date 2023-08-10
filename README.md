@@ -11,3 +11,12 @@ O aplicativo da Urna Eletrônica possui as seguintes funcionalidades:
 - Exibição de informações do candidato: O aplicativo exibe o nome, número e cargo do candidato selecionado.
 - Registro do voto: Os eleitores podem registrar seu voto no candidato escolhido.
 - Exibição da pontuação dos candidatos: Existe uma opção para visualizar a pontuação atual de todos os candidatos.
+
+## 📐 Layout
+  
+<div align="center">
+  <img src="https://github.com/theobarretosilva/HealthCare/blob/master/readmeImgs/tela_inicial.jpg?raw=true" width="180"/>
+  <img src="https://github.com/theobarretosilva/HealthCare/blob/master/readmeImgs/tela_inicial_passo2.jpg?raw=true" width="180"/>
+  <img src="https://github.com/theobarretosilva/HealthCare/blob/master/readmeImgs/tela_inicial_3.jpg?raw=true" width="180"/>
+  <img src="https://github.com/theobarretosilva/HealthCare/blob/master/readmeImgs/tela_ranking.jpg?raw=true" width="180"/>
+</div>
